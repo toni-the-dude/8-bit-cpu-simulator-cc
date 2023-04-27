@@ -12,6 +12,6 @@ A Python 8-bit CPU simulator for Codecademy's Computer Architecture Portofolio P
 |    011      |   Ra  |   Rb  |    SUB      |
 |    100      |   Ra  |   Rb  |    MUL      |
 |    101      |   Ra  |   Rb  |    DIV      |
-|    110      |   Ra  |   Rb  |    MOV      |
+|    110      |   Ra  |   Rb  |    MOVE     |
 |    111      |   Ra  |   Rb  |    CMP      |
 +-------------+-------+-------+-------------+
