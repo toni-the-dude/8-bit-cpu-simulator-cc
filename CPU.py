@@ -1,3 +1,6 @@
+from memory import Memory;
+memory = Memory()
+
 class CPU:
 
     def __init__(self):
@@ -12,6 +15,11 @@ class CPU:
             print("-Successfully created ControlUnit object.")
 
         def fetch_instructions(self):
+            with open("input.txt", "r") as instructions:
+                content = instructions.read()
+                print(content)
+
+        def decode_instruction(self, instruction):
             pass
 
     class Processor:
@@ -21,6 +29,7 @@ class CPU:
             self.alu = self.ALU()
             self.regA = self.Register() # Accumulator
             self.regB = self.Register() # Program Counter
+            self.decoded_instruction = 0
 
         class ALU:
 
@@ -28,7 +37,7 @@ class CPU:
                 print("--Successfully created ALU object.")
 
             def load(self):
-                pass
+                memory.read_memory(self.decoded_instruction)
 
             def store(self):
                 pass
