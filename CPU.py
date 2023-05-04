@@ -23,21 +23,36 @@ class CPU:
                 "110": processor.alu.move,
                 "111": processor.alu.cmp
             }
+            self.currentInstruction = None
+            self.processor = processor
             print("-Successfully created ControlUnit object.")
 
-        def fetch_instructions(self):
+        def fetch(self):
             with open("input.txt", "r") as instructions:
                 content = instructions.read()
                 print(content)
                 self.instructions.append(content)
 
-        def decode_instruction(self):
-            opcode = self.instructions[0][:3]
+        def decode(self):
+            instruction = self.instructions[0]
+            opcode = instruction[:3]
+            regAValue = instruction[3:6]
+            regBValue = instruction[6:]
             print(opcode)
+            print(regAValue)
+            print(regBValue)
+            self.processor.regA.set_value(regAValue)
+            self.processor.regB.set_value(regBValue)
+            print(self.processor.regA.get_value())
+            print(self.processor.regB.get_value())
             try:
                 print(self.instructionSet[opcode])
+                self.currentInstruction = self.instructionSet[opcode]
             except KeyError:
                 print("Unavailable instruction.")
+
+        def execute(self):
+            pass
 
     class Processor:
 
@@ -80,7 +95,14 @@ class CPU:
         class Register:
 
             def __init__(self):
+                self.value = None
                 print("--Successfully created Register object.")
+
+            def set_value(self, value): 
+                self.value = value
+
+            def get_value(self):
+                return self.value
 
     class Cache:
 

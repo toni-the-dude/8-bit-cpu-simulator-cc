@@ -6,9 +6,9 @@ A Python 8-bit CPU simulator for Codecademy's Computer Architecture Portofolio P
 +-------------+-------+-------+-------------+
 |   Opcode    |   A   |   B   |   Operation |
 +-------------+-------+-------+-------------+
-|    000      |   000 |   000 |    LOAD     |
-|    001      |   Ra  |   000 |    STORE    |
-|    010      |   Ra  |   000 |    ADD      |
+|    000      |Memory | Index |    LOAD     |
+|    001      |   Ra  |   00  |    STORE    |
+|    010      |   Ra  |   00  |    ADD      |
 |    011      |   Ra  |   Rb  |    SUB      |
 |    100      |   Ra  |   Rb  |    MUL      |
 |    101      |   Ra  |   Rb  |    DIV      |
