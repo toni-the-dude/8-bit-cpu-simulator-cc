@@ -14,4 +14,5 @@ class Memory:
         return ''.join(self.memoryMatrix[memoryIndex]) # Returns an 8-bit string representing a binary value
 
     def write_memory(self, memoryIndex):
-        pass
+        print("Writing {} to memory at index {}.".format(self.memoryMatrix[memoryIndex], memoryIndex))
+        return None # Returns an 8-bit string representing a binary value
