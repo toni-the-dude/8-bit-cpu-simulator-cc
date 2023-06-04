@@ -48,31 +48,36 @@ class CPU:
             try:
                 print(self.instructionSet[opcode])
                 self.currentInstruction = self.instructionSet[opcode]
+                return self.execute()
             except KeyError:
                 print("Unavailable instruction.")
 
         def execute(self):
-            pass
+            return self.currentInstruction()
 
     class Processor:
 
         def __init__(self):
             print("-Successfully created Processor object.")
-            self.alu = self.ALU()
+            self.alu = self.ALU(self)
             self.regA = self.Register() # Accumulator
             self.regB = self.Register() # Program Counter
-            self.decoded_instruction = 0
+            # self.decoded_instruction = 0
 
         class ALU:
 
-            def __init__(self):
+            def __init__(self, processor):
+                self.processor = processor
                 print("--Successfully created ALU object.")
 
             def load(self):
-                memory.read_memory(self.decoded_instruction)
+                memory_index = int(self.processor.regA.get_value() + self.processor.regB.get_value(), 2)
+                print("Loading value from memory at index: {}".format(memory_index))
+                return memory.read_memory(memory_index)
 
             def store(self):
-                pass
+                memory.write_memory(self.decoded_instruction)
+                print("Storing value into memory at index: {}".format(memory_index))
 
             def add(self):
                 pass

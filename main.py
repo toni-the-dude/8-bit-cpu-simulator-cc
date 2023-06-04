@@ -4,4 +4,4 @@ from memory import Memory;
 cpuObj = CPU()
 memoObj = Memory()
 cpuObj.cu.fetch()
-cpuObj.cu.decode()
+print(cpuObj.cu.decode())
