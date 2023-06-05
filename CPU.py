@@ -76,12 +76,13 @@ class CPU:
             def load(self):
                 memory_index = int(self.processor.regA.get_value() + self.processor.regB.get_value(), 2)
                 print("Loading value from memory at index: {}".format(memory_index))
-                return memory.read_memory(memory_index)
+                self.processor.regA = memory.read_memory(memory_index)
+                return self.processor.regA
 
             def store(self):
                 memory_index = int(self.processor.regA.get_value() + self.processor.regB.get_value(), 2)
                 print("Storing value into memory at index: {}".format(memory_index))
-                return memory.write_memory(memory_index)
+                return memory.write_memory(memory_index, self.processor.regA.get_value())
 
             def add(self):
                 pass
