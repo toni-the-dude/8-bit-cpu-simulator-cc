@@ -32,25 +32,28 @@ class CPU:
                 content = instructions.read()
                 print(content)
                 self.instructions.append(content)
+                print(self.instructions)
+                self.instructions = self.instructions[0].splitlines()
 
         def decode(self):
-            instruction = self.instructions[0]
-            opcode = instruction[:3]
-            regAValue = instruction[3:6]
-            regBValue = instruction[6:]
-            print(opcode)
-            print(regAValue)
-            print(regBValue)
-            self.processor.regA.set_value(regAValue)
-            self.processor.regB.set_value(regBValue)
-            print(self.processor.regA.get_value())
-            print(self.processor.regB.get_value())
-            try:
-                print(self.instructionSet[opcode])
-                self.currentInstruction = self.instructionSet[opcode]
-                return self.execute()
-            except KeyError:
-                print("Unavailable instruction.")
+            for instruction in self.instructions:
+            # instruction = self.instructions[0]
+                opcode = instruction[:3]
+                regAValue = instruction[3:6]
+                regBValue = instruction[6:]
+                print(opcode)
+                print(regAValue)
+                print(regBValue)
+                self.processor.regA.set_value(regAValue)
+                self.processor.regB.set_value(regBValue)
+                print(self.processor.regA.get_value())
+                print(self.processor.regB.get_value())
+                try:
+                    print(self.instructionSet[opcode])
+                    self.currentInstruction = self.instructionSet[opcode]
+                    return self.execute()
+                except KeyError:
+                    print("Unavailable instruction.")
 
         def execute(self):
             return self.currentInstruction()
@@ -60,8 +63,8 @@ class CPU:
         def __init__(self):
             print("-Successfully created Processor object.")
             self.alu = self.ALU(self)
-            self.regA = self.Register() # Accumulator
-            self.regB = self.Register() # Program Counter
+            self.regA = self.Register() 
+            self.regB = self.Register()
             # self.decoded_instruction = 0
 
         class ALU:
@@ -73,11 +76,13 @@ class CPU:
             def load(self):
                 memory_index = int(self.processor.regA.get_value() + self.processor.regB.get_value(), 2)
                 print("Loading value from memory at index: {}".format(memory_index))
-                return memory.read_memory(memory_index)
+                self.processor.regA = memory.read_memory(memory_index)
+                return self.processor.regA
 
             def store(self):
-                memory.write_memory(self.decoded_instruction)
+                memory_index = int(self.processor.regA.get_value() + self.processor.regB.get_value(), 2)
                 print("Storing value into memory at index: {}".format(memory_index))
+                return memory.write_memory(memory_index, self.processor.regA.get_value())
 
             def add(self):
                 pass
