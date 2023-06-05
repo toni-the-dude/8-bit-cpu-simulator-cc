@@ -14,12 +14,12 @@ class CPU:
         def __init__(self, processor):
             self.instructions = []
             self.instructionSet = {
-                "000": processor.alu.load,
+                "000": processor.alu.loadA,
                 "001": processor.alu.store,
-                "010": processor.alu.add,
-                "011": processor.alu.sub,
-                "100": processor.alu.mul,
-                "101": processor.alu.div,
+                "010": processor.alu.loadB,
+                "011": processor.alu.increment,
+                "100": processor.alu.add,
+                "101": processor.alu.sub,
                 "110": processor.alu.move,
                 "111": processor.alu.cmp
             }
@@ -44,8 +44,9 @@ class CPU:
                 print(opcode)
                 print(regAValue)
                 print(regBValue)
-                self.processor.regA.set_value(regAValue)
-                self.processor.regB.set_value(regBValue)
+                if opcode not in ["100", "101"]:
+                    self.processor.regA.set_value(regAValue)
+                    self.processor.regB.set_value(regBValue)
                 print(self.processor.regA.get_value())
                 print(self.processor.regB.get_value())
                 try:
@@ -73,7 +74,7 @@ class CPU:
                 self.processor = processor
                 print("--Successfully created ALU object.")
 
-            def load(self):
+            def loadA(self):
                 memory_index = int(self.processor.regA.get_value() + self.processor.regB.get_value(), 2)
                 print("Loading value from memory at index: {}".format(memory_index))
                 self.processor.regA = memory.read_memory(memory_index)
@@ -90,10 +91,13 @@ class CPU:
             def sub(self):
                 pass
 
-            def mul(self):
-                pass
+            def loadB(self):
+                memory_index = int(self.processor.regA.get_value() + self.processor.regB.get_value(), 2)
+                print("Loading value from memory at index: {}".format(memory_index))
+                self.processor.regB = memory.read_memory(memory_index)
+                return self.processor.regB
 
-            def div(self):
+            def increment(self):
                 pass
 
             def move(self):
