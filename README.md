@@ -6,12 +6,12 @@ A Python 8-bit CPU simulator for Codecademy's Computer Architecture Portofolio P
 +-------------+-------+-------+-------------+
 |   Opcode    |   A   |   B   |   Operation |
 +-------------+-------+-------+-------------+
-|    000      |   00  |   00  |    LOAD     |
-|    001      |   Ra  |   00  |    STORE    |
-|    010      |   Ra  |   00  |    ADD      |
-|    011      |   Ra  |   Rb  |    SUB      |
-|    100      |   Ra  |   Rb  |    MUL      |
-|    101      |   Ra  |   Rb  |    DIV      |
-|    110      |   Ra  |   Rb  |    MOVE     |
-|    111      |   Ra  |   Rb  |    CMP      |
+|    000      |Memory | Index |    LOAD(Ra) |
+|    001      |Memory | Index |    STORE(Ra)|
+|    010      |Memory | Index |    LOAD(Rb) |
+|    011      |   00  |   00  |    FLIP     |
+|    100      |   00  |   00  |    ADD      |
+|    101      |   00  |   00  |    SUB      |
+|    110      |   00  |   00  |    SWAP     |
+|    111      |   00  |   00  |    GEN      |
 +-------------+-------+-------+-------------+

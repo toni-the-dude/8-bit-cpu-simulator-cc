@@ -6,7 +6,6 @@ class CPU:
     def __init__(self):
         self.processor = self.Processor()
         self.cu = self.ControlUnit(self.processor)
-        self.cache = self.Cache()
         print("Successfully created CPU object.")
 
     class ControlUnit:
@@ -14,14 +13,14 @@ class CPU:
         def __init__(self, processor):
             self.instructions = []
             self.instructionSet = {
-                "000": processor.alu.load,
+                "000": processor.alu.loadA,
                 "001": processor.alu.store,
-                "010": processor.alu.add,
-                "011": processor.alu.sub,
-                "100": processor.alu.mul,
-                "101": processor.alu.div,
-                "110": processor.alu.move,
-                "111": processor.alu.cmp
+                "010": processor.alu.loadB,
+                "011": processor.alu.flip,
+                "100": processor.alu.add,
+                "101": processor.alu.sub,
+                "110": processor.alu.swap,
+                "111": processor.alu.generate
             }
             self.currentInstruction = None
             self.processor = processor
@@ -30,7 +29,7 @@ class CPU:
         def fetch(self):
             with open("input.txt", "r") as instructions:
                 content = instructions.read()
-                print(content)
+                print("All unfiltered instructions: {}".format(content))
                 self.instructions.append(content)
                 print(self.instructions)
                 self.instructions = self.instructions[0].splitlines()
@@ -38,20 +37,22 @@ class CPU:
         def decode(self):
             for instruction in self.instructions:
             # instruction = self.instructions[0]
+                print("Current instruction: {}".format(instruction))
                 opcode = instruction[:3]
                 regAValue = instruction[3:6]
                 regBValue = instruction[6:]
-                print(opcode)
-                print(regAValue)
-                print(regBValue)
-                self.processor.regA.set_value(regAValue)
-                self.processor.regB.set_value(regBValue)
+                print("Opcode: {}".format(opcode))
+                print("regAValue: {}".format(regAValue))
+                print("regBValue: {}".format(regBValue))
+                if opcode not in ["100", "101", "011"]:
+                    self.processor.regA.set_value(regAValue)
+                    self.processor.regB.set_value(regBValue)
                 print(self.processor.regA.get_value())
                 print(self.processor.regB.get_value())
                 try:
                     print(self.instructionSet[opcode])
                     self.currentInstruction = self.instructionSet[opcode]
-                    return self.execute()
+                    print(self.execute())
                 except KeyError:
                     print("Unavailable instruction.")
 
@@ -73,7 +74,7 @@ class CPU:
                 self.processor = processor
                 print("--Successfully created ALU object.")
 
-            def load(self):
+            def loadA(self):
                 memory_index = int(self.processor.regA.get_value() + self.processor.regB.get_value(), 2)
                 print("Loading value from memory at index: {}".format(memory_index))
                 self.processor.regA = memory.read_memory(memory_index)
@@ -85,27 +86,91 @@ class CPU:
                 return memory.write_memory(memory_index, self.processor.regA.get_value())
 
             def add(self):
-                pass
+                regAValue = self.processor.regA.get_value() # String
+                regBValue = self.processor.regB.get_value() # String
+                result = ""
+                index = -1
+                carry = 0
+
+                while abs(index) < len(min(len(regAValue), len(regBValue))):
+                    if regAValue[index] == 1 and regBValue[index] == 1:
+                        result.insert(0, "0")
+                        carry = 1
+                    elif regAValue[index] == 1 or regBValue[index] == 1:
+                        result.insert(0, "1")
+                    else:
+                        result.insert(0, "0")
+
+                    if carry == 1:
+                        if result[index] == "0":
+                            result[index] == "1"
+                            carry = 0
+                        else: 
+                            result[index] == "0"
+
+                    index -= 1
+
+                return result
 
             def sub(self):
                 pass
 
-            def mul(self):
+            def loadB(self):
+                memory_index = int(self.processor.regA.get_value() + self.processor.regB.get_value(), 2)
+                print("Loading value from memory at index: {}".format(memory_index))
+                self.processor.regB = memory.read_memory(memory_index)
+                return self.processor.regB
+
+            def flip(self):
+                regAValue = self.processor.regA.get_value() # String
+                regBValue = self.processor.regB.get_value() # String
+                index = -1
+                flippedRegA = ""
+                flippedRegB = ""
+                lenA = len(regAValue)
+                lenB = len(regBValue)
+                print(self.processor.regA.get_value())
+                print(self.processor.regB.get_value())
+
+                while lenA < 8:
+                    regAValue = "0" + regAValue
+                    print("Preparing to flip regAValue: {}".format(regAValue))
+                    lenA += 1
+
+                while lenB < 8:
+                    regBValue = "0" + regBValue
+                    print("Preparing to flip regBValue: {}".format(regBValue)) 
+                    lenB += 1
+
+                while abs(index) < 8:
+                    if regAValue[index] == "0":
+                        flippedRegA = "1" + flippedRegA
+                    else:
+                        flippedRegA = "0" + flippedRegA
+
+                    if regBValue[index] == "0":
+                        flippedRegB = "1" + flippedRegB
+                    else:
+                        flippedRegB = "0" + flippedRegB
+
+                    index -= 1
+                    print(index)
+
+                self.processor.regA.set_value(flippedRegA)
+                self.processor.regB.set_value(flippedRegB)
+                print(self.processor.regA.get_value())
+                print(self.processor.regB.get_value())
+
+            def swap(self):
                 pass
 
-            def div(self):
-                pass
-
-            def move(self):
-                pass
-
-            def cmp(self):
+            def generate(self):
                 pass
 
         class Register:
 
             def __init__(self):
-                self.value = None
+                self.value = "0"
                 print("--Successfully created Register object.")
 
             def set_value(self, value): 
@@ -113,8 +178,3 @@ class CPU:
 
             def get_value(self):
                 return self.value
-
-    class Cache:
-
-        def __init__(self):
-            print("-Successfully created Cache object.")
